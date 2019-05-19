@@ -4,6 +4,7 @@ class Todo extends Component {
   state = {
     edit: false,
     tempId: null,
+    tempTitle: "",
     mockData: [
       { id: 1, title: "Pay Bills", done: false, date: new Date() },
       { id: 2, title: "Find True love", done: false, date: new Date() },
@@ -34,27 +35,44 @@ class Todo extends Component {
     console.log("Deleting.");
     let id = arguments[0];
     this.setState({
-      mockData: this.state.mockData.filter(item => {
-        if (id !== item.id) {
-          return item;
-        }
-      })
+      mockData: this.state.mockData.filter(item => item.id !== id)
     });
   }
 
-  onEditHandle(e) {
-      // opens renderEditForm, submits data to onUpdateHandle
-    console.log("Editing.");
+  onEditHandle = (id, title) => {
+    // opens renderEditForm, submits data to onUpdateHandle
+    console.log("Editing...", id, title);
     this.setState({
       edit: true,
-      id: arguments[0],
-      title: arguments[1]
+      tempId: id,
+      tempTitle: title
     });
-  }
+    console.log(this.state);
+  };
 
-  onCompleteHandle = e => {
+  onUpdateHandle = e => {
+    e.preventDefault();
+    this.setState({
+      mockData: this.state.mockData.map(item => {
+        if (item.id === this.state.tempId) {
+          item.title = e.target.updatedItem.value;
+        }
+        return item;
+      })
+    });
+    this.setState({ edit: false });
+  };
+
+  onCompleteHandle = id => {
     console.log("Completing.");
-    console.log(e);
+    this.setState({
+      mockData: this.state.mockData.map(item => {
+        if (item.id === id) {
+          item.done = true;
+        }
+        return item;
+      })
+    });
   };
 
   renderEditForm() {
@@ -65,7 +83,7 @@ class Todo extends Component {
             type="text"
             name="updatedItem"
             className="item"
-            defaultValue={this.state.title}
+            defaultValue={this.state.tempTitle}
           />
           <button className="update-add-item">Update</button>
         </form>
@@ -83,7 +101,7 @@ class Todo extends Component {
         </form>
         <ul>
           {this.state.mockData.map(item => (
-            <li key={item.id}>
+            <li key={item.id} className={item.done ? "done" : "hidden"}>
               {item.title}
               <button onClick={this.onDeleteHandle.bind(this, item.id)}>
                 Delete
@@ -93,7 +111,7 @@ class Todo extends Component {
               >
                 Edit
               </button>
-              <button onClick={this.onCompleteHandle.bind(this)}>
+              <button onClick={this.onCompleteHandle.bind(this, item.id)}>
                 Complete
               </button>
             </li>

@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+.done {
+  text-decoration: line-through;
+}
+
 /*! Primitive
  * A front end Sass boilerplate
  *
