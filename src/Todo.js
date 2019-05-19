@@ -13,19 +13,35 @@ class Todo extends Component {
   };
 
   onSubmitHandle = e => {
-    console.log(e);
+    e.preventDefault();
+    console.log("Submitting...", e.target.item.value);
+
+    this.setState({
+      mockData: [
+        ...this.state.mockData,
+        {
+          id: Date.now(),
+          title: e.target.item.value,
+          done: false,
+          date: new Date()
+        }
+      ]
+    });
+    e.target.item.value = "";
   };
 
   onDeleteHandle = e => {
+    console.log("Deleting.");
     console.log(e);
   };
 
-
   onEditHandle = e => {
+    console.log("Editing.");
     console.log(e);
   };
 
   onCompleteHandle = e => {
+    console.log("Completing.");
     console.log(e);
   };
 
@@ -42,6 +58,14 @@ class Todo extends Component {
               {item.title}
               <button onClick={this.onDeleteHandle.bind(this, item.id)}>
                 Delete
+              </button>
+              <button
+                onClick={this.onEditHandle.bind(this, item.id, item.title)}
+              >
+                Edit
+              </button>
+              <button onClick={this.onCompleteHandle.bind(this)}>
+                Complete
               </button>
             </li>
           ))}
