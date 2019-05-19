@@ -30,24 +30,53 @@ class Todo extends Component {
     e.target.item.value = "";
   };
 
-  onDeleteHandle = e => {
+  onDeleteHandle() {
     console.log("Deleting.");
-    console.log(e);
-  };
+    let id = arguments[0];
+    this.setState({
+      mockData: this.state.mockData.filter(item => {
+        if (id !== item.id) {
+          return item;
+        }
+      })
+    });
+  }
 
-  onEditHandle = e => {
+  onEditHandle(e) {
+      // opens renderEditForm, submits data to onUpdateHandle
     console.log("Editing.");
-    console.log(e);
-  };
+    this.setState({
+      edit: true,
+      id: arguments[0],
+      title: arguments[1]
+    });
+  }
 
   onCompleteHandle = e => {
     console.log("Completing.");
     console.log(e);
   };
 
+  renderEditForm() {
+    if (this.state.edit) {
+      return (
+        <form onSubmit={this.onUpdateHandle.bind(this)}>
+          <input
+            type="text"
+            name="updatedItem"
+            className="item"
+            defaultValue={this.state.title}
+          />
+          <button className="update-add-item">Update</button>
+        </form>
+      );
+    }
+  }
+
   render() {
     return (
       <div>
+        {this.renderEditForm()}
         <form onSubmit={this.onSubmitHandle.bind(this)}>
           <input type="text" name="item" className="item" />
           <button className="btn-add-item">Add</button>
